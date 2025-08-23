@@ -14,13 +14,20 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: latest
+          node-version: 20.x
 
       - name: Install obfuscator
         run: npm install -g javascript-obfuscator
 
       - name: Clone latest BPB source
         run: git clone --depth=1 https://github.com/bia-pain-bache/BPB-Worker-Panel.git temp
+
+      - name: Install dependencies and build BPB
+        run: |
+          cd temp
+          npm install
+          npm run build
+        working-directory: ./temp
 
       - name: Copy unobfuscated worker
         run: cp temp/build/unobfuscated-worker.js origin.js
