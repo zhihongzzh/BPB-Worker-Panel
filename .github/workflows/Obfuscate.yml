@@ -11,12 +11,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: latest
-      - run: npm install -g javascript-obfuscator
-      - run: wget -O origin.js https://raw.githubusercontent.com/bia-pain-bache/BPB-Worker-Panel/main/build/unobfuscated-worker.js
-      - run: |
+
+      - name: Install obfuscator
+        run: npm install -g javascript-obfuscator
+
+      - name: Clone latest BPB source
+        run: git clone --depth=1 https://github.com/bia-pain-bache/BPB-Worker-Panel.git temp
+
+      - name: Copy unobfuscated worker
+        run: cp temp/build/unobfuscated-worker.js origin.js
+
+      - name: Obfuscate
+        run: |
           javascript-obfuscator origin.js --output _worker.js \
             --compact true \
             --control-flow-flattening true \
@@ -30,6 +40,7 @@ jobs:
             --string-array-threshold 1 \
             --transform-object-keys true \
             --unicode-escape-sequence true
+
       - uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: ":arrow_up: update latest bpb panel"
