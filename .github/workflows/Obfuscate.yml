@@ -24,7 +24,6 @@ jobs:
 
       - name: Install dependencies and build BPB
         run: |
-          cd temp
           npm install
           npm run build
         working-directory: ./temp
