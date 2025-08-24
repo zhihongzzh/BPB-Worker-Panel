@@ -16,15 +16,18 @@ jobs:
         with:
           node-version: 20.x
 
-      - name: Install obfuscator
-        run: npm install -g javascript-obfuscator
+      - name: Install obfuscator (with mirror & retry)
+        run: |
+          for i in {1..5}; do
+            npm install -g javascript-obfuscator --registry=https://registry.npmmirror.com && break || sleep 10
+          done
 
       - name: Clone latest BPB source
         run: git clone --depth=1 https://github.com/bia-pain-bache/BPB-Worker-Panel.git temp
 
       - name: Install dependencies and build BPB
         run: |
-          npm install
+          npm install --registry=https://registry.npmmirror.com
           npm run build
         working-directory: ./temp
 
